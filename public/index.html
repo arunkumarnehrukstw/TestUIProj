@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Web Application</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 80%;
+      margin: 20px auto;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple Web Application</h1>
+  <button id="button1">Get Student Info</button>
+  <button id="button2">Get Mark Info</button>
+  <div id="result"></div>
+
+  <script>
+    const resultDiv = document.getElementById('result');
+    const tableHeaders = ['Key', 'Value'];
+
+    function fetchData(url) {
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const table = document.createElement('table');
+          const headerRow = table.insertRow();
+
+          tableHeaders.forEach(headerText => {
+            const headerCell = document.createElement('th');
+            headerCell.textContent = headerText;
+            headerRow.appendChild(headerCell);
+          });
+
+          Object.entries(data).forEach(([key, value]) => {
+            const row = table.insertRow();
+            const keyCell = row.insertCell();
+            const valueCell = row.insertCell();
+
+            keyCell.textContent = key;
+            valueCell.textContent = value;
+          });
+
+          resultDiv.innerHTML = '';
+          resultDiv.appendChild(table);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          resultDiv.innerHTML = '<p>Error fetching data. Please try again later.</p>';
+        });
+    }
+
+    const button1 = document.getElementById('button1');
+    const button2 = document.getElementById('button2');
+
+    button1.addEventListener('click', () => {
+      fetchData('/studentinfo');
+    });
+
+    button2.addEventListener('click', () => {
+      fetchData('/markinfo');
+    });
+  </script>
+</body>
+</html>
